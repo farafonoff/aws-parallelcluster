@@ -1266,10 +1266,12 @@ class ClusterCdkStack:
         head_lt_security_groups = self._get_head_node_security_groups_full()
 
         # LT network interfaces
+        assign_public_ip = head_node.networking.assign_public_ip if head_node.networking.assign_public_ip is not None else False
         head_lt_nw_interfaces = [
             ec2.CfnLaunchTemplate.NetworkInterfaceProperty(
                 device_index=0,
                 network_interface_id=self._head_eni.ref,
+                associate_public_ip_address=assign_public_ip,
             )
         ]
         for network_card in head_node.network_cards_list[1:]:
