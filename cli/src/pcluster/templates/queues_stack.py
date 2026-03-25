@@ -445,7 +445,7 @@ def add_network_interfaces(
         ec2.CfnLaunchTemplate.NetworkInterfaceProperty(
             device_index=0,
             network_card_index=0,
-            associate_public_ip_address=queue.networking.assign_public_ip,
+            associate_public_ip_address=queue.networking.assign_public_ip if queue.networking.assign_public_ip is not None else False,
             interface_type=nci0_interface_type,
             groups=queue_lt_security_groups,
             subnet_id=(queue.networking.subnet_ids[0] if isinstance(compute_resource, SlurmComputeResource) else None),

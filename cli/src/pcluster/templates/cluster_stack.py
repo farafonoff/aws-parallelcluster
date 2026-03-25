@@ -1277,6 +1277,7 @@ class ClusterCdkStack:
                 ec2.CfnLaunchTemplate.NetworkInterfaceProperty(
                     device_index=0 if network_card.maximum_network_interfaces() == 1 else 1,
                     network_card_index=network_card.network_card_index(),
+                    associate_public_ip_address=False,
                     groups=head_lt_security_groups,
                     subnet_id=head_node.networking.subnet_id,
                 )

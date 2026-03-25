@@ -1181,7 +1181,7 @@ class _LaunchTemplateValidator(Validator):
     def _build_launch_network_interfaces(network_cards_list, use_efa, security_group_ids, subnet, use_public_ips=False):
         """Build the needed NetworkInterfaces to launch an instance."""
         network_interfaces = []
-        for network_card in network_cards_list:
+        for i, network_card in enumerate(network_cards_list):
             network_interfaces.append(
                 {
                     "DeviceIndex": 0,
@@ -1189,12 +1189,10 @@ class _LaunchTemplateValidator(Validator):
                     "InterfaceType": "efa" if use_efa else "interface",
                     "Groups": security_group_ids,
                     "SubnetId": subnet,
+                    "AssociatePublicIpAddress": use_public_ips if i == 0 else False,
                 }
             )
 
-        # If instance types has multiple Network Interfaces we also check for
-        if len(network_cards_list) > 1 and use_public_ips:
-            network_interfaces[0]["AssociatePublicIpAddress"] = True
         return network_interfaces
 
     def _ec2_run_instance(self, availability_zone: str, **kwargs):  # noqa: C901 FIXME!!!
@@ -1279,6 +1277,7 @@ class HeadNodeLaunchTemplateValidator(_LaunchTemplateValidator):
                 use_efa=False,  # EFA is not supported on head node
                 security_group_ids=head_node_security_groups,
                 subnet=head_node.networking.subnet_id,
+                use_public_ips=bool(head_node.networking.assign_public_ip),
             )
 
             # Test Head Node Instance Configuration

@@ -744,9 +744,13 @@ class SubnetsMixin:
 class HeadNodeNetworking(_BaseNetworking):
     """Represent the networking configuration for the head node."""
 
-    def __init__(self, subnet_id: str, elastic_ip: Union[str, bool] = None, proxy: Proxy = None, **kwargs):
+    def __init__(
+        self, subnet_id: str, assign_public_ip: bool = None, elastic_ip: Union[str, bool] = None,
+        proxy: Proxy = None, **kwargs
+    ):
         super().__init__(**kwargs)
         self.subnet_id = Resource.init_param(subnet_id)
+        self.assign_public_ip = Resource.init_param(assign_public_ip)
         self.elastic_ip = Resource.init_param(elastic_ip)
         self.proxy = proxy
 
